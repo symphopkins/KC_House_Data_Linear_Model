@@ -1,0 +1,83 @@
+---
+title: "Project 7"
+author: "Symphony Hopkins"
+date: "2022-12-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, include = FALSE, echo = FALSE}
+library(readr)
+kc_house_data <- read_csv("~/Documents/Maryville_University/DSCI_502/kc_house_data.csv")
+```
+
+**1. Numerically summarize the price info by finding its minimum, maximum, range, mean, median, and the standard deviation of prices.**
+
+-   The minimum price value is `r min(kc_house_data$price)`.
+-   The maximum price value is `r max(kc_house_data$price)`.
+-   The range of the price values is `r range(kc_house_data$price)`.
+-   The mean price value is `r mean(kc_house_data$price)`.
+-   The median price value is `r median(kc_house_data$price)`.
+-   The standard deviation of the price values is `r sd(kc_house_data$price)`.
+
+**2. Graphically summarize the following info:**
+
+```{r, include = FALSE, echo = FALSE}
+library(ggplot2)
+```
+
+a. Plot a histogram of prices.
+
+```{r, echo = FALSE}
+ggplot(data = kc_house_data, aes(x = price)) + geom_histogram() + ggtitle("Histogram of Prices") + xlab(" Prices") + ylab("Count")
+```
+
+b. Plot the box plot of prices against view.
+
+```{r, echo = FALSE}
+kc_house_data$view <- as.factor(kc_house_data$view)
+
+ggplot(data=kc_house_data, aes(x=price, y=view)) + 
+  geom_boxplot(aes(col= view), notch = TRUE) + ggtitle("Boxplot of Prices Against View") + xlab("Prices") + ylab("View")
+```
+
+c. Scatter plot of prices against sqft_living.
+
+```{r, echo = FALSE}
+ggplot(data = kc_house_data, aes(x = price, y=sqft_living))+geom_point() + geom_smooth() + ggtitle("Scatterplot of Prices Against Sqft Living") + xlab("Prices") + ylab("Sqft Living")
+```
+
+**3. Build the following linear models to forecast the price and recommend the best model to the management**
+
+a. Forecast price using bedrooms, bathrooms and sqft_living.
+
+```{r, echo = FALSE}
+lm_result_1 <- lm(price ~ bedrooms + bathrooms + sqft_living, data= kc_house_data)
+
+summary(lm_result_1)
+
+```
+
+b. Forecast the price using bedrooms, bathrooms and sqft_living and all the cross effects between them.
+
+```{r, echo = FALSE}
+lm_result_2 <- lm(price ~ (bedrooms + bathrooms + sqft_living)^3, data= kc_house_data)
+
+summary(lm_result_2)
+```
+
+c. Forecast the price using bedrooms, bathrooms and sqft_living, waterfront and grade.
+
+```{r, echo = FALSE}
+lm_result_3 <- lm(price ~ bedrooms + bathrooms + sqft_living + waterfront + grade, data= kc_house_data)
+
+summary(lm_result_3)
+```
+
+**Looking at the adjusted r-square scores from Models A, B, and C, we can see that Model C is the best model for the management.**
+
+
+
